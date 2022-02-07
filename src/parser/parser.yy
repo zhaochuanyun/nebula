@@ -530,6 +530,8 @@ unreserved_keyword
     | KW_POINT              { $$ = new std::string("point"); }
     | KW_LINESTRING         { $$ = new std::string("linestring"); }
     | KW_POLYGON            { $$ = new std::string("polygon"); }
+    | KW_HTTP               { $$ = new std::string("http"); }
+    | KW_HTTPS              { $$ = new std::string("https"); }
     ;
 
 expression
@@ -1779,6 +1781,18 @@ text_search_client_item
         $$->set_host(*$2);
         delete $2;
     }
+    | L_PAREN host_item COMMA KW_HTTP R_PAREN {
+        $$ = new nebula::meta::cpp2::FTClient();
+        $$->set_host(*$2);
+        $$->set_conn_type("http");
+        delete $2;
+    }
+    | L_PAREN host_item COMMA KW_HTTPS R_PAREN {
+        $$ = new nebula::meta::cpp2::FTClient();
+        $$->set_host(*$2);
+        $$->set_conn_type("https");
+        delete $2;
+    }
     | L_PAREN host_item COMMA STRING COMMA STRING R_PAREN {
         $$ = new nebula::meta::cpp2::FTClient();
         $$->set_host(*$2);
@@ -1787,6 +1801,26 @@ text_search_client_item
         delete $2;
         delete $4;
         delete $6;
+    }
+    | L_PAREN host_item COMMA KW_HTTP COMMA STRING COMMA STRING R_PAREN {
+        $$ = new nebula::meta::cpp2::FTClient();
+        $$->set_host(*$2);
+        $$->set_user(*$6);
+        $$->set_pwd(*$8);
+        $$->set_conn_type("http");
+        delete $2;
+        delete $6;
+        delete $8;
+    }
+    | L_PAREN host_item COMMA KW_HTTPS COMMA STRING COMMA STRING R_PAREN {
+        $$ = new nebula::meta::cpp2::FTClient();
+        $$->set_host(*$2);
+        $$->set_user(*$6);
+        $$->set_pwd(*$8);
+        $$->set_conn_type("https");
+        delete $2;
+        delete $6;
+        delete $8;
     }
     ;
 
